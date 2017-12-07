@@ -220,8 +220,9 @@ class SyncBackend extends Command {
 	) {
 
 		$output->writeln("Analyzing {$uid} ...");
-		if (!$backend->userExists($uid)) {
-			$this->handleUnknownUsers([$uid], $input, $output, $missingAccountsAction, $validActions);
+		$user_id = reset($backend->getUsers($uid, 1));
+		if (!$backend->userExists($user_id)) {
+			$this->handleUnknownUsers([$user_id], $input, $output, $missingAccountsAction, $validActions);
 		} else {
 			// sync
 			// use at least Verbose output
@@ -230,7 +231,7 @@ class SyncBackend extends Command {
 			} else {
 				$logLevel = $this->verbosityLevelMap[$output->getVerbosity()];
 			}
-			$syncService->syncUser($uid, new SyncServiceCallback(
+			$syncService->syncUser($user_id, new SyncServiceCallback(
 				$consoleOutput, $logLevel
 			));
 		}
