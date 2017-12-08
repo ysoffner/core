@@ -1,7 +1,6 @@
 <?php
 namespace OC\Migrations;
 
-use OC\Migration\OutputAdapter;
 use OC\Migration\SimpleOutput;
 use OC\User\AccountMapper;
 use OC\User\AccountTermMapper;
