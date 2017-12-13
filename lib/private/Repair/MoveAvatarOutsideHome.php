@@ -129,19 +129,17 @@ class MoveAvatarOutsideHome implements IRepairStep {
 	 * @param IOutput $output
 	 */
 	public function run(IOutput $output) {
-		$ocVersionFromBeforeUpdate = $this->config->getSystemValue('version', '0.0.0');
-		if (version_compare($ocVersionFromBeforeUpdate, '9.2.0.2', '<')) {
-			$function = function(IUser $user) use ($output) {
-				$this->moveAvatars($output, $user);
-				$output->advance();
-			};
 
-			$output->startProgress($this->userManager->countSeenUsers());
+		$function = function(IUser $user) use ($output) {
+			$this->moveAvatars($output, $user);
+			$output->advance();
+		};
 
-			$this->userManager->callForSeenUsers($function);
+		$output->startProgress($this->userManager->countSeenUsers());
 
-			$output->finishProgress();
-		}
+		$this->userManager->callForSeenUsers($function);
+
+		$output->finishProgress();
 	}
 }
 
