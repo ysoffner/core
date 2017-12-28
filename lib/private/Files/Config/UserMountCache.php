@@ -23,6 +23,7 @@
 
 namespace OC\Files\Config;
 
+use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use OC\Files\Filesystem;
 use OCA\Files_Sharing\SharedMount;
@@ -132,12 +133,18 @@ class UserMountCache implements IUserMountCache {
 
 	private function addToCache(ICachedMountInfo $mount) {
 		if ($mount->getStorageId() !== -1) {
-			$this->connection->insertIfNotExist('*PREFIX*mounts', [
-				'storage_id' => $mount->getStorageId(),
-				'root_id' => $mount->getRootId(),
-				'user_id' => $mount->getUser()->getUID(),
-				'mount_point' => $mount->getMountPoint()
-			], ['root_id', 'user_id']);
+			try {
+				$this->connection->insertIfNotExist('*PREFIX*mounts', [
+					'storage_id' => $mount->getStorageId(),
+					'root_id' => $mount->getRootId(),
+					'user_id' => $mount->getUser()->getUID(),
+					'mount_point' => $mount->getMountPoint()
+				], ['root_id', 'user_id']);
+			} catch (UniqueConstraintViolationException $e) {
+				$this->logger->info('upsert collision for storage id: '.$mount->getStorageId(), ['app' => __CLASS__]);
+				// Ignore if it exists
+			}
+
 		} else {
 			// in some cases this is legitimate, like orphaned shares
 			$this->logger->debug('Could not get storage info for mount at ' . $mount->getMountPoint());
