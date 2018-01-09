@@ -42,10 +42,6 @@
 	width: 100%;
 	box-sizing: border-box;
 }
-#app-navigation li.active {
-	background-color: #efefef;
-	font-weight: bold;
-}
 
 #app-navigation .active.with-menu > a,
 #app-navigation .with-counter > a {
@@ -85,6 +81,11 @@
 #app-navigation .selected,
 #app-navigation .selected a {
 	opacity: 1;
+}
+
+#app-navigation .active {
+	background-color: rgba(240, 240, 240, .9);
+	font-weight: bold;
 }
 
 #app-navigation li.divider {
