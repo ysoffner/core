@@ -119,7 +119,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 - Keep null in getMetaData in Checksum storage wrapper, fixes some files:scan scenarios - [#30302](https://github.com/owncloud/core/issues/30302)
 - Modals dialogs can now scroll, improves link share dialog UX - [#30424](https://github.com/owncloud/core/issues/30424)
 - Adjust link share wording and fix translations - [#31036](https://github.com/owncloud/core/issues/31036)
-- Fix failure of shares which are already moved with transfer ownership - [#30161](https://github.com/owncloud/core/issues/30161)
 - Return 403 instead of 503 to resume syncing of desktop client - [#30353](https://github.com/owncloud/core/issues/30353)
 - Guide users to also check spelling for typos in federated share id - [#30355](https://github.com/owncloud/core/issues/30355)
 - Fixed issue with number of hidden files not updating on renaming a file - [#30359](https://github.com/owncloud/core/issues/30359)
