@@ -577,6 +577,7 @@ matrix:
       USE_SERVER: true
       INSTALL_SERVER: true
       CHOWN_SERVER: true
+      USE_EMAIL: true
 
     - PHP_VERSION: 7.1
       TEST_SUITE: selenium
