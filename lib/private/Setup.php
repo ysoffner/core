@@ -378,10 +378,37 @@ class Setup {
 				$config->setSystemValue('logtimezone', \date_default_timezone_get());
 			}
 
+			// adding the apps-external directory by default using apps_path
+			$apps2Key = \OC::$server->getSystemConfig()->getValue('apps_paths', false);
+
+			// add the key only if it does not exist (protect against overwriting)
+			if ($apps2Key === false) {
+				
+				$defaultAppsPaths = [
+					'apps_paths' => [
+						[
+							"path" => \OC::$SERVERROOT . '/apps',
+							"url" => "/apps",
+							"writable" => false
+						],
+					    [
+							"path" => \OC::$SERVERROOT . '/apps-external',
+							"url" => "/apps-external",
+							"writable" => true
+						]
+					]
+				];
+					    
+				$config->setSystemValues($defaultAppsPaths);
+			}
+
 			self::installBackgroundJobs();
 
 			//and we are done
 			$config->setSystemValue('installed', true);
+
+			// finished initial setup
+			
 		}
 
 		return $error;
