@@ -128,7 +128,14 @@ class PersonalGeneralSettingsPage extends OwncloudPage {
 	 * @return void
 	 */
 	public function changeEmailAddress($newEmailAddress, Session $session) {
-		$this->fillField($this->emailAddressInputID, $newEmailAddress);
+		$emailField = $this->findById($this->emailAddressInputID);
+		if (\is_null($emailField)) {
+			throw new ElementNotFoundException(
+				__METHOD__ .
+				" could not find email field with id $this->emailAddressInputID"
+			);
+		}
+		$this->cleanInputAndSetValue($emailField, $newEmailAddress);
 		$changeEmailButton = $this->findById($this->changeEmailButtonID);
 		if (\is_null($changeEmailButton)) {
 			throw new ElementNotFoundException(

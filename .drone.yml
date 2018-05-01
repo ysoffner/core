@@ -194,7 +194,7 @@ pipeline:
     image: owncloudci/php:${PHP_VERSION}
     pull: true
     environment:
-      - BROWSER=chrome
+      - BROWSER=${BROWSER}
       - SELENIUM_HOST=selenium
       - SRV_HOST_NAME=server
       - SRV_HOST_PORT=80
@@ -278,6 +278,17 @@ services:
     when:
       matrix:
         TEST_SUITE: selenium
+        BROWSER: chrome
+
+  selenium:
+    image: selenium/standalone-firefox-debug:3.8.1
+    pull: true
+    environment:
+      - SE_OPTS=-enablePassThrough false
+    when:
+      matrix:
+        TEST_SUITE: selenium
+        BROWSER: firefox
 
   server:
     image: owncloudci/php:${PHP_VERSION}
@@ -524,8 +535,10 @@ matrix:
       OWNCLOUD_LOG: true
 
   # UI Acceptance tests
+  ## Chrome
     - PHP_VERSION: 7.1
       TEST_SUITE: selenium
+      BROWSER: chrome
       BEHAT_SUITE: webUILogin
       DB_TYPE: mariadb
       USE_SERVER: true
@@ -536,6 +549,7 @@ matrix:
 
     - PHP_VERSION: 7.1
       TEST_SUITE: selenium
+      BROWSER: chrome
       BEHAT_SUITE: webUIFavorites
       DB_TYPE: mariadb
       USE_SERVER: true
@@ -545,6 +559,7 @@ matrix:
 
     - PHP_VERSION: 7.1
       TEST_SUITE: selenium
+      BROWSER: chrome
       BEHAT_SUITE: webUIPersonalSettings
       DB_TYPE: mariadb
       USE_SERVER: true
@@ -554,6 +569,7 @@ matrix:
 
     - PHP_VERSION: 7.1
       TEST_SUITE: selenium
+      BROWSER: chrome
       BEHAT_SUITE: webUIFiles
       DB_TYPE: mariadb
       USE_SERVER: true
@@ -563,6 +579,7 @@ matrix:
 
     - PHP_VERSION: 7.1
       TEST_SUITE: selenium
+      BROWSER: chrome
       BEHAT_SUITE: webUIMoveFilesFolders
       DB_TYPE: mariadb
       USE_SERVER: true
@@ -572,6 +589,7 @@ matrix:
 
     - PHP_VERSION: 7.1
       TEST_SUITE: selenium
+      BROWSER: chrome
       BEHAT_SUITE: webUIRenameFiles
       DB_TYPE: mariadb
       USE_SERVER: true
@@ -581,6 +599,7 @@ matrix:
 
     - PHP_VERSION: 7.1
       TEST_SUITE: selenium
+      BROWSER: chrome
       BEHAT_SUITE: webUIRenameFolders
       DB_TYPE: mariadb
       USE_SERVER: true
@@ -590,6 +609,7 @@ matrix:
 
     - PHP_VERSION: 7.1
       TEST_SUITE: selenium
+      BROWSER: chrome
       BEHAT_SUITE: webUITrashbin
       DB_TYPE: mariadb
       USE_SERVER: true
@@ -599,6 +619,7 @@ matrix:
 
     - PHP_VERSION: 7.1
       TEST_SUITE: selenium
+      BROWSER: chrome
       BEHAT_SUITE: webUISharingInternalGroups
       DB_TYPE: mariadb
       USE_SERVER: true
@@ -608,6 +629,7 @@ matrix:
 
     - PHP_VERSION: 7.1
       TEST_SUITE: selenium
+      BROWSER: chrome
       BEHAT_SUITE: webUISharingInternalUsers
       DB_TYPE: mariadb
       USE_SERVER: true
@@ -617,6 +639,7 @@ matrix:
 
     - PHP_VERSION: 7.1
       TEST_SUITE: selenium
+      BROWSER: chrome
       BEHAT_SUITE: webUISharingExternal
       DB_TYPE: mariadb
       USE_SERVER: true
@@ -627,6 +650,7 @@ matrix:
 
     - PHP_VERSION: 7.1
       TEST_SUITE: selenium
+      BROWSER: chrome
       BEHAT_SUITE: webUIRestrictSharing
       DB_TYPE: mariadb
       USE_SERVER: true
@@ -636,6 +660,153 @@ matrix:
 
     - PHP_VERSION: 7.1
       TEST_SUITE: selenium
+      BROWSER: chrome
+      BEHAT_SUITE: webUIUpload
+      DB_TYPE: mariadb
+      USE_SERVER: true
+      INSTALL_SERVER: true
+      CHOWN_SERVER: true
+      OWNCLOUD_LOG: true
+
+  ## Firefox
+    - PHP_VERSION: 7.1
+      TEST_SUITE: selenium
+      BROWSER: firefox
+      BROWSER_VERSION: 58
+      BEHAT_SUITE: webUILogin
+      DB_TYPE: mariadb
+      USE_SERVER: true
+      INSTALL_SERVER: true
+      CHOWN_SERVER: true
+      OWNCLOUD_LOG: true
+      USE_EMAIL: true
+
+    - PHP_VERSION: 7.1
+      TEST_SUITE: selenium
+      BROWSER: firefox
+      BROWSER_VERSION: 58
+      BEHAT_SUITE: webUIFavorites
+      DB_TYPE: mariadb
+      USE_SERVER: true
+      INSTALL_SERVER: true
+      CHOWN_SERVER: true
+      OWNCLOUD_LOG: true
+
+    - PHP_VERSION: 7.1
+      TEST_SUITE: selenium
+      BROWSER: firefox
+      BROWSER_VERSION: 58
+      BEHAT_SUITE: webUIPersonalSettings
+      DB_TYPE: mariadb
+      USE_SERVER: true
+      INSTALL_SERVER: true
+      CHOWN_SERVER: true
+      OWNCLOUD_LOG: true
+
+    - PHP_VERSION: 7.1
+      TEST_SUITE: selenium
+      BROWSER: firefox
+      BROWSER_VERSION: 58
+      BEHAT_SUITE: webUIFiles
+      DB_TYPE: mariadb
+      USE_SERVER: true
+      INSTALL_SERVER: true
+      CHOWN_SERVER: true
+      OWNCLOUD_LOG: true
+
+    - PHP_VERSION: 7.1
+      TEST_SUITE: selenium
+      BROWSER: firefox
+      BROWSER_VERSION: 58
+      BEHAT_SUITE: webUIMoveFilesFolders
+      DB_TYPE: mariadb
+      USE_SERVER: true
+      INSTALL_SERVER: true
+      CHOWN_SERVER: true
+      OWNCLOUD_LOG: true
+
+    - PHP_VERSION: 7.1
+      TEST_SUITE: selenium
+      BROWSER: firefox
+      BROWSER_VERSION: 58
+      BEHAT_SUITE: webUIRenameFiles
+      DB_TYPE: mariadb
+      USE_SERVER: true
+      INSTALL_SERVER: true
+      CHOWN_SERVER: true
+      OWNCLOUD_LOG: true
+
+    - PHP_VERSION: 7.1
+      TEST_SUITE: selenium
+      BROWSER: firefox
+      BROWSER_VERSION: 58
+      BEHAT_SUITE: webUIRenameFolders
+      DB_TYPE: mariadb
+      USE_SERVER: true
+      INSTALL_SERVER: true
+      CHOWN_SERVER: true
+      OWNCLOUD_LOG: true
+
+    - PHP_VERSION: 7.1
+      TEST_SUITE: selenium
+      BROWSER: firefox
+      BROWSER_VERSION: 58
+      BEHAT_SUITE: webUITrashbin
+      DB_TYPE: mariadb
+      USE_SERVER: true
+      INSTALL_SERVER: true
+      CHOWN_SERVER: true
+      OWNCLOUD_LOG: true
+
+    - PHP_VERSION: 7.1
+      TEST_SUITE: selenium
+      BROWSER: firefox
+      BROWSER_VERSION: 58
+      BEHAT_SUITE: webUISharingInternalGroups
+      DB_TYPE: mariadb
+      USE_SERVER: true
+      INSTALL_SERVER: true
+      CHOWN_SERVER: true
+      OWNCLOUD_LOG: true
+
+    - PHP_VERSION: 7.1
+      TEST_SUITE: selenium
+      BROWSER: firefox
+      BROWSER_VERSION: 58
+      BEHAT_SUITE: webUISharingInternalUsers
+      DB_TYPE: mariadb
+      USE_SERVER: true
+      INSTALL_SERVER: true
+      CHOWN_SERVER: true
+      OWNCLOUD_LOG: true
+
+    - PHP_VERSION: 7.1
+      TEST_SUITE: selenium
+      BROWSER: firefox
+      BROWSER_VERSION: 58
+      BEHAT_SUITE: webUISharingExternal
+      DB_TYPE: mariadb
+      USE_SERVER: true
+      USE_FEDERATED_SERVER: true
+      INSTALL_SERVER: true
+      CHOWN_SERVER: true
+      OWNCLOUD_LOG: true
+
+    - PHP_VERSION: 7.1
+      TEST_SUITE: selenium
+      BROWSER: firefox
+      BROWSER_VERSION: 58
+      BEHAT_SUITE: webUIRestrictSharing
+      DB_TYPE: mariadb
+      USE_SERVER: true
+      INSTALL_SERVER: true
+      CHOWN_SERVER: true
+      OWNCLOUD_LOG: true
+
+    - PHP_VERSION: 7.1
+      TEST_SUITE: selenium
+      BROWSER: firefox
+      BROWSER_VERSION: 58
       BEHAT_SUITE: webUIUpload
       DB_TYPE: mariadb
       USE_SERVER: true
