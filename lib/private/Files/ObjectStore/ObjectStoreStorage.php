@@ -34,6 +34,10 @@ use OCP\Files\ObjectStore\IVersionedObjectStorage;
 class ObjectStoreStorage extends \OC\Files\Storage\Common {
 
 	/**
+	 * @var \OC\Files\Cache\CacheEntry[] $statCache
+	 */
+	private $statCache;
+	/**
 	 * @var array
 	 */
 	private static $tmpFiles = [];
@@ -204,13 +208,16 @@ class ObjectStoreStorage extends \OC\Files\Storage\Common {
 	}
 
 	public function stat($path) {
+		// Normilize path for stat
 		$path = $this->normalizePath($path);
-		$cacheEntry = $this->getCache()->get($path);
-		if ($cacheEntry instanceof CacheEntry) {
-			return $cacheEntry->getData();
-		} else {
-			return false;
+
+		// Check if stat has been already cached
+		if (isset($this->statCache[$path])) {
+			return $this->statCache[$path];
 		}
+
+		// Stat not cached, requires to be retrieved from filecache
+		return $this->getPathStat($path);
 	}
 
 	/**
@@ -275,7 +282,7 @@ class ObjectStoreStorage extends \OC\Files\Storage\Common {
 				} else {
 					return false;
 				}
-				// no break
+			// no break
 			case 'w':
 			case 'wb':
 			case 'a':
@@ -500,5 +507,26 @@ class ObjectStoreStorage extends \OC\Files\Storage\Common {
 			return $this->objectStore->restoreVersion($this->getURN($stat['fileid']), $versionId);
 		}
 		return parent::restoreVersion($internalPath, $versionId);
+	}
+
+	public function getMetaData($path) {
+		// Normalize the path
+		$path = $this->normalizePath($path);
+		
+		// Allow to cache stat for fetching objectstorage metadata
+		// since it is read only operation
+		$this->statCache[$path] = $this->getPathStat($path);
+		$metaData =  parent::getMetaData($path);
+		unset($this->statCache[$path]);
+		return $metaData;
+	}
+
+	private function getPathStat($path) {
+		$cacheEntry = $this->getCache()->get($path);
+		if ($cacheEntry instanceof CacheEntry) {
+			return $cacheEntry->getData();
+		} else {
+			return false;
+		}
 	}
 }
