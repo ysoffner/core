@@ -28,7 +28,7 @@ Feature: sharing
 		Then publicly uploading a file should not work
 		And the HTTP status code should be "404"
 
-	Scenario: Uploading file to a public read-only share folder does not work
+	Scenario: Uploading file to a public read-only shared folder does not work
 		Given user "user0" has been created
 		When user "user0" creates a share using the API with settings
 			| path        | FOLDER |
@@ -37,7 +37,7 @@ Feature: sharing
 		Then publicly uploading a file should not work
 		And the HTTP status code should be "403"
 
-	Scenario: Uploading file to a user read-only share folder does not work
+	Scenario: Uploading file to a user read-only shared folder does not work
 		Given user "user0" has been created
 		And user "user1" has been created
 		And user "user0" has created a share with settings
@@ -48,7 +48,7 @@ Feature: sharing
 		When user "user1" uploads file "data/textfile.txt" to "FOLDER (2)/textfile.txt" using the API
 		Then the HTTP status code should be "403"
 
-	Scenario: Uploading file to a group read-only share folder does not work
+	Scenario: Uploading file to a group read-only shared folder does not work
 		Given user "user0" has been created
 		And user "user1" has been created
 		And group "sharegroup" has been created
@@ -84,7 +84,7 @@ Feature: sharing
 		When the user downloads the file "/FOLDER/test.txt" using the API
 		Then the downloaded content should be "test"
 
-	Scenario: Uploading file to a user upload-only share folder works
+	Scenario: Uploading file to a user upload-only shared folder works
 		Given user "user0" has been created
 		And user "user1" has been created
 		And user "user0" has created a share with settings
@@ -95,7 +95,7 @@ Feature: sharing
 		When user "user1" uploads file "data/textfile.txt" to "FOLDER (2)/textfile.txt" using the API
 		Then the HTTP status code should be "201"
 
-	Scenario: Uploading file to a group upload-only share folder works
+	Scenario: Uploading file to a group upload-only shared folder works
 		Given user "user0" has been created
 		And user "user1" has been created
 		And group "sharegroup" has been created
@@ -120,7 +120,7 @@ Feature: sharing
 		When the user downloads the file "/FOLDER/test.txt" using the API
 		Then the downloaded content should be "test"
 
-	Scenario: Uploading file to a user read/write share folder works
+	Scenario: Uploading file to a user read/write shared folder works
 		Given user "user0" has been created
 		And user "user1" has been created
 		And user "user0" has created a share with settings
@@ -131,7 +131,7 @@ Feature: sharing
 		When user "user1" uploads file "data/textfile.txt" to "FOLDER (2)/textfile.txt" using the API
 		Then the HTTP status code should be "201"
 
-	Scenario: Uploading file to a group read/write share folder works
+	Scenario: Uploading file to a group read/write shared folder works
 		Given user "user0" has been created
 		And user "user1" has been created
 		And group "sharegroup" has been created

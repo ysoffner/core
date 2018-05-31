@@ -104,7 +104,7 @@ Feature: sharing
 		And the etag of element "/" of user "user1" should have changed
 		And the etag of element "/PARENT" of user "user0" should not have changed
 
-	Scenario: sharee of a read-only share folder tries to delete the shared folder
+	Scenario: sharee of a read-only shared folder tries to delete the shared folder
 		Given user "user0" has been created
 		And user "user1" has been created
 		And user "user0" has created a folder "/shared"
@@ -132,7 +132,7 @@ Feature: sharing
 		Then the HTTP status code should be "403"
 		And as "user0" the file "/shared/shared_file.txt" should exist
 
-	Scenario: sharee of a upload-only share folder tries to delete his file in the folder
+	Scenario: sharee of a upload-only shared folder tries to delete his file in the folder
 		Given user "user0" has been created
 		And user "user1" has been created
 		And user "user0" has created a folder "/shared"
