@@ -165,7 +165,7 @@ class Mailer implements IMailer {
 
 		switch ($this->config->getSystemValue('mail_smtpmode', 'php')) {
 			case 'smtp':
-				$instance = $this->getSMTPInstance();
+				$instance = $this->getSmtpInstance();
 				break;
 			case 'sendmail':
 				// FIXME: Move into the return statement but requires proper testing
