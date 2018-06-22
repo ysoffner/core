@@ -46,6 +46,10 @@ class MigrationService {
 	private $connection;
 	/** @var string */
 	private $appName;
+	/** @var string  */
+	private $migrationsPath;
+	/** @var string  */
+	private $migrationsNamespace;
 
 	/**
 	 * MigrationService constructor.
