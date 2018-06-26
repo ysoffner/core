@@ -48,6 +48,82 @@ Feature: Display notifications when receiving a share
 			| link        | /^%base_url%(\/index\.php)?\/f\/(\d+)$/ |
 			| object_type | /^local_share$/                         |
 
+	@skip @issue-31870
+	Scenario: share to group sends notifications to both existing and new members for an old share created before auto-accept is disabled
+		Given user "user0" has shared folder "/PARENT" with group "grp1"
+		When the administrator sets parameter "shareapi_auto_accept_share" of app "core" to "no" using the API
+		And the administrator creates the user "newuser" using the API
+		And the administrator adds user "newuser" to group "grp1" using the API
+		Then user "user1" should have 1 notification
+		And the last notification of user "user1" should match these regular expressions
+			| app         | /^files_sharing$/                       |
+			| subject     | /^User "user0" shared "PARENT" with you$/ |
+			| message     | /^$/                                    |
+			| link        | /^%base_url%(\/index\.php)?\/f\/(\d+)$/ |
+			| object_type | /^local_share$/                         |
+		And user "user2" should have 1 notification
+		And the last notification of user "user2" should match these regular expressions
+			| app         | /^files_sharing$/                       |
+			| subject     | /^User "user0" shared "PARENT" with you$/ |
+			| message     | /^$/                                    |
+			| link        | /^%base_url%(\/index\.php)?\/f\/(\d+)$/ |
+			| object_type | /^local_share$/                         |
+		And user "newuser" should have 1 notification
+		And the last notification of user "newuser" should match these regular expressions
+			| app         | /^files_sharing$/                       |
+			| subject     | /^User "user0" shared "PARENT" with you$/ |
+			| message     | /^$/                                    |
+			| link        | /^%base_url%(\/index\.php)?\/f\/(\d+)$/ |
+			| object_type | /^local_share$/                         |
+
+	@skip @issue-31870
+	Scenario: share to group sends notifications to both existing and new members for a share created after auto-accept is disabled
+		Given parameter "shareapi_auto_accept_share" of app "core" has been set to "no"
+		When user "user0" shares folder "/PARENT" with group "grp1" using the API
+		And the administrator creates the user "newuser" using the API
+		And the administrator adds user "newuser" to group "grp1" using the API
+		Then user "user1" should have 1 notification
+		And the last notification of user "user1" should match these regular expressions
+			| app         | /^files_sharing$/                       |
+			| subject     | /^User "user0" shared "PARENT" with you$/ |
+			| message     | /^$/                                    |
+			| link        | /^%base_url%(\/index\.php)?\/f\/(\d+)$/ |
+			| object_type | /^local_share$/                         |
+		And user "user2" should have 1 notification
+		And the last notification of user "user2" should match these regular expressions
+			| app         | /^files_sharing$/                       |
+			| subject     | /^User "user0" shared "PARENT" with you$/ |
+			| message     | /^$/                                    |
+			| link        | /^%base_url%(\/index\.php)?\/f\/(\d+)$/ |
+			| object_type | /^local_share$/                         |
+		And user "newuser" should have 1 notification
+		And the last notification of user "newuser" should match these regular expressions
+			| app         | /^files_sharing$/                       |
+			| subject     | /^User "user0" shared "PARENT" with you$/ |
+			| message     | /^$/                                    |
+			| link        | /^%base_url%(\/index\.php)?\/f\/(\d+)$/ |
+			| object_type | /^local_share$/                         |
+
+	@skip @issue-31870
+	Scenario: share to group does not send notifications to existing and new members for an old share created before auto-accept is enabled
+		Given parameter "shareapi_auto_accept_share" of app "core" has been set to "no"
+		And user "user0" has shared folder "/PARENT" with group "grp1"
+		When the administrator sets parameter "shareapi_auto_accept_share" of app "core" to "yes" using the API
+		And the administrator creates the user "newuser" using the API
+		And the administrator adds user "newuser" to group "grp1" using the API
+		Then user "user1" should have 0 notifications
+		And user "user2" should have 0 notifications
+		And user "newuser" should have 0 notifications
+
+	Scenario: share to group does not send notifications to existing and new members for a share created after auto-accept is enabled
+		Given parameter "shareapi_auto_accept_share" of app "core" has been set to "yes"
+		When user "user0" shares folder "/PARENT" with group "grp1" using the API
+		And the administrator creates the user "newuser" using the API
+		And the administrator adds user "newuser" to group "grp1" using the API
+		Then user "user1" should have 0 notifications
+		And user "user2" should have 0 notifications
+		And user "newuser" should have 0 notifications
+
 	Scenario: when auto-accepting is enabled no notifications are sent
 		Given parameter "shareapi_auto_accept_share" of app "core" has been set to "yes"
 		When user "user0" shares folder "/PARENT" with user "user1" using the API
