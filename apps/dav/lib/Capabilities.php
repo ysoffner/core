@@ -22,14 +22,33 @@
 namespace OCA\DAV;
 
 use OCP\Capabilities\ICapability;
+use OCP\IConfig;
 
 class Capabilities implements ICapability {
+	/** @var IConfig */
+	private $config;
+
+	/**
+	 * Capabilities constructor.
+	 *
+	 * @param IConfig $config
+	 */
+	public function __construct(IConfig $config) {
+		$this->config = $config;
+	}
+
 	public function getCapabilities() {
-		return [
+		$cap =  [
 			'dav' => [
 				'chunking' => '1.0',
-				'zsync' => '1.0',
+				'zsync' => '1.0'
 			]
 		];
+
+		if ($this->config->getSystemValue('dav.enable.async', true)) {
+			$cap['async'] = '1.0';
+		}
+
+		return $cap;
 	}
 }
