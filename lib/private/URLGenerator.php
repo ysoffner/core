@@ -30,6 +30,8 @@
  */
 
 namespace OC;
+
+use OC\Helper\EnvironmentHelper;
 use OCP\Theme\ITheme;
 use OC_Defaults;
 use OCP\ICacheFactory;
@@ -50,18 +52,25 @@ class URLGenerator implements IURLGenerator {
 	private $router;
 	/** @var ITheme */
 	private $theme;
+	
+	/** @var EnvironmentHelper */
+	private $environmentHelper;
 
 	/**
 	 * @param IConfig $config
 	 * @param ICacheFactory $cacheFactory
 	 * @param IRouter $router
+	 * @param EnvironmentHelper $environmentHelper
 	 */
 	public function __construct(IConfig $config,
 								ICacheFactory $cacheFactory,
-								IRouter $router) {
+								IRouter $router,
+								EnvironmentHelper $environmentHelper
+	) {
 		$this->config = $config;
 		$this->cacheFactory = $cacheFactory;
 		$this->router = $router;
+		$this->environmentHelper = $environmentHelper;
 		$this->theme = \OC_Util::getTheme();
 	}
 
@@ -108,25 +117,25 @@ class URLGenerator implements IURLGenerator {
 			// Check if the app is in the app folder
 			if ($app_path && \file_exists($app_path . '/' . $file)) {
 				if (\substr($file, -3) == 'php') {
-					$urlLinkTo = \OC::$WEBROOT . '/index.php/apps/' . $app;
+					$urlLinkTo = $this->environmentHelper->getWebRoot() . '/index.php/apps/' . $app;
 					if ($frontControllerActive) {
-						$urlLinkTo = \OC::$WEBROOT . '/apps/' . $app;
+						$urlLinkTo = $this->environmentHelper->getWebRoot() . '/apps/' . $app;
 					}
 					$urlLinkTo .= ($file != 'index.php') ? '/' . $file : '';
 				} else {
 					$urlLinkTo = \OC_App::getAppWebPath($app) . '/' . $file;
 				}
 			} else {
-				$urlLinkTo = \OC::$WEBROOT . '/' . $app . '/' . $file;
+				$urlLinkTo = $this->environmentHelper->getWebRoot() . '/' . $app . '/' . $file;
 			}
 		} else {
-			if (\file_exists(\OC::$SERVERROOT . '/core/' . $file)) {
-				$urlLinkTo = \OC::$WEBROOT . '/core/' . $file;
+			if (\file_exists($this->environmentHelper->getServerRoot() . '/core/' . $file)) {
+				$urlLinkTo = $this->environmentHelper->getWebRoot() . '/core/' . $file;
 			} else {
 				if ($frontControllerActive && $file === 'index.php') {
-					$urlLinkTo = \OC::$WEBROOT . '/';
+					$urlLinkTo = $this->environmentHelper->getWebRoot() . '/';
 				} else {
-					$urlLinkTo = \OC::$WEBROOT . '/' . $file;
+					$urlLinkTo = $this->environmentHelper->getWebRoot() . '/' . $file;
 				}
 			}
 		}
@@ -160,7 +169,11 @@ class URLGenerator implements IURLGenerator {
 			$cache->set($cacheKey, $path);
 			return $path;
 		} else {
-			throw new RuntimeException('image not found: image:' . $image . ' webroot:' . \OC::$WEBROOT . ' serverroot:' . \OC::$SERVERROOT);
+			throw new RuntimeException(
+				'image not found: image:' . $image
+				. ' webroot:' . $this->environmentHelper->getWebRoot()
+				. ' serverroot:' . $this->environmentHelper->getServerRoot()
+			);
 		}
 	}
 
@@ -173,9 +186,9 @@ class URLGenerator implements IURLGenerator {
 		if ($app !== '') {
 			$appWebPath = \OC_App::getAppWebPath($app);
 		} else {
-			$appWebPath = \OC::$WEBROOT;
+			$appWebPath = $this->environmentHelper->getWebRoot();
 		}
-		$appPath = \substr($appWebPath, \strlen(\OC::$WEBROOT));
+		$appPath = \substr($appWebPath, \strlen($this->environmentHelper->getWebRoot()));
 
 		$directories = ["/core", ""];
 
@@ -194,8 +207,8 @@ class URLGenerator implements IURLGenerator {
 				return $this->theme->getWebPath() . $file;
 			}
 
-			if ($imagePath = $this->getImagePathOrFallback(\OC::$SERVERROOT . $file)) {
-				return \OC::$WEBROOT . $file;
+			if ($imagePath = $this->getImagePathOrFallback($this->environmentHelper->getServerRoot() . $file)) {
+				return $this->environmentHelper->getWebRoot() . $file;
 			}
 		}
 	}
@@ -227,9 +240,9 @@ class URLGenerator implements IURLGenerator {
 		}
 
 		// The ownCloud web root can already be prepended.
-		$webRoot = \substr($url, 0, \strlen(\OC::$WEBROOT)) === \OC::$WEBROOT
+		$webRoot = \substr($url, 0, \strlen($this->environmentHelper->getWebRoot())) === $this->environmentHelper->getWebRoot()
 			? ''
-			: \OC::$WEBROOT;
+			: $this->environmentHelper->getWebRoot();
 
 		$request = \OC::$server->getRequest();
 		return $request->getServerProtocol() . '://' . $request->getServerHost() . $webRoot . $separator . $url;
