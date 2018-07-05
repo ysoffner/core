@@ -129,18 +129,24 @@ class MoveAvatarOutsideHome implements IRepairStep {
 	 * @param IOutput $output
 	 */
 	public function run(IOutput $output) {
-		$ocVersionFromBeforeUpdate = $this->config->getSystemValue('version', '0.0.0');
-		if (\version_compare($ocVersionFromBeforeUpdate, '9.2.0.2', '<')) {
-			$function = function (IUser $user) use ($output) {
-				$this->moveAvatars($output, $user);
-				$output->advance();
-			};
-
-			$output->startProgress($this->userManager->countSeenUsers());
-
-			$this->userManager->callForSeenUsers($function);
-
-			$output->finishProgress();
+		// TODO when installed_at is finally stored, dont run if installed_at >= 10.0.0
+		
+		if($this->config->getAppValue('core', 'avatars_migrated', 'no') === 'yes') {
+			$output->info('Already migrated. Skipping');
+			return;
 		}
+		$function = function (IUser $user) use ($output) {
+			$this->moveAvatars($output, $user);
+			$output->advance();
+		};
+
+		$output->startProgress($this->userManager->countSeenUsers());
+
+		$this->userManager->callForSeenUsers($function);
+
+		// Record that we have executed the avatar migration now
+		$this->config->setAppValue('core', 'avatars_migrated', 'yes');
+
+		$output->finishProgress();
 	}
 }
